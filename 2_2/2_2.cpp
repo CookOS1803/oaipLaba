@@ -4,7 +4,7 @@ using namespace std;
 
 bool check_input(bool fail_flag);
 
-int main() //dsad
+int main()
 {
     double n, k, m, z, x, f, y;
     int choice;
