@@ -20,7 +20,7 @@ int main()
     
     a = pow(y + pow(x - 1, 1/3.), 1/4.);
     b = x - y;
-    b = (b < 0) ? -b : b;
+    b = b < 0 ? -b : b;
     c = sin(z);
     c = c*c + tan(z);
 

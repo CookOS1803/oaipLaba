@@ -50,15 +50,15 @@ int main()
 
 double min(double a, double b)
 {
-    return (a < b) ? a : b;
+    return a < b ? a : b;
 }
 
 double max(double a, double b)
 {
-    return (a > b) ? a : b;
+    return a > b ? a : b;
 }
 
 double dabs(double a)
 {
-    return (a < 0) ? -a : a;
+    return a < 0 ? -a : a;
 }
