@@ -14,7 +14,7 @@ int main()
     y = sqrt(a);
 
     z1 = sqrt(x - 24*a) / (3*y - 2/y);
-    z2 = (a > 0 and a < 2/3.) ? -y : y;
+    z2 = a > 0 and a < 2/3. ? -y : y;
 
     cout << "z1 = " << z1 << "; z2 = " << z2 << endl;
 
