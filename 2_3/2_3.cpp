@@ -31,8 +31,7 @@ int main()
 
         a = sin(x);
         a = a*a;
-        b = cos(y);
-        b = b*b;
+        b = cos(y*y);
 
         f = min(x, y) + a - b;
     }
