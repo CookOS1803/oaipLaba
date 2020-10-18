@@ -33,5 +33,7 @@ int main()
 
     cout << "\nmin y: " << miny << "\nmax y: " << maxy << endl;
 
+    system("pause");
+        
     return 0;
 }
