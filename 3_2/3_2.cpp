@@ -15,10 +15,12 @@ int main()
 
     for (int i = 1; x <= b; x += h, i++)
     {
-        s = 0;
+        double r = -4*x*x / 2;
+        s = r;
         for (int k = 1; k <= n; k++)
         {
-            s += (k % 2 == 0 ? 1 : -1) * pow(2*x, 2*k)/factorial(2*k);
+            r = -r * 4*x*x / (4*k*k + 6*k + 2);
+            s += r;
         }
 
         y = cos(x);

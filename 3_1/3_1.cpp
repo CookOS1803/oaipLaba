@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <math.h>
 using namespace std;
 
 int main()
@@ -10,6 +9,8 @@ int main()
     cin >> a >> b >> h;
 
     x = a;
+    miny = numeric_limits<double>::max();
+    maxy = numeric_limits<double>::min();
 
     cout << "\nn\tx\ty\n";
 
@@ -17,18 +18,10 @@ int main()
     {
         y = (1. - x*x/4.)*cos(x) - x/2.*sin(x);
 
-        double t = trunc(x*10e6)/10e6; //в отчёте убери эту хуйню
-        cout << i << ":\t" << (t == 0 ? -t : t) << ";\t" << y << endl;
+        cout << i << ":\t" << x << ";\t" << y << endl;
 
-        if (i == 1)
-        {
-            miny = maxy = y;
-        }
-        else 
-        {
-            if (miny > y) miny = y;
-            if (maxy < y) maxy = y;
-        }
+        if (miny > y) miny = y;
+        if (maxy < y) maxy = y;
     }
 
     cout << "\nmin y: " << miny << "\nmax y: " << maxy << endl;
