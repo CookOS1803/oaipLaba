@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 using namespace std;
 
-int factorial(int a);
 double dabs(double a);
 
 int main()
@@ -17,9 +16,10 @@ int main()
     {
         double r = -4*x*x / 2;
         s = r;
-        for (int k = 1; k <= n; k++)
+
+        for (int k = 2; k <= n; k++)
         {
-            r = -r * 4*x*x / (4*k*k + 6*k + 2);
+            r = -r * 4*x*x / (4*k*k - 2*k);
             s += r;
         }
 
@@ -32,16 +32,6 @@ int main()
     system("pause");
 
     return 0;
-}
-
-int factorial(int a)
-{
-    for (int i = a - 1; i != 0; i--)
-    {
-        a *= i;
-    }
-
-    return a;
 }
 
 double dabs(double a)
