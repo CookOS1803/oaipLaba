@@ -14,10 +14,10 @@ int main()
 
     for (int i = 1; x <= b; x += h, i++)
     {
-        double r = -4*x*x / 2;
-        s = r;
+        double r = 1;
+        s = 0;
 
-        for (int k = 2; k <= n; k++)
+        for (int k = 1; k <= n; k++)
         {
             r = -r * 4*x*x / (4*k*k - 2*k);
             s += r;

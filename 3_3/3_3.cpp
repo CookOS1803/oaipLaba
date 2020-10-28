@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
 
-double S(double x, double y, int& k);
+double S(double x, double y, int k, int& t);
 double Y(double x);
 double dabs(double a);
 
@@ -18,12 +18,12 @@ int main()
 
     for (int i = 1; x <= b; x += h, i++)
     {
-        int k = 2;
+        int k = 1, t;
 
         y = Y(x);
-        s = S(x, y, k);
+        s = S(x, y, k, t);
 
-        cout << i << ": " << y << "; " << s << "; " << dabs(s-y) << "; " << k << endl;
+        cout << i << ": " << y << "; " << s << "; " << dabs(s-y) << "; " << t << endl;
     }
 
     system("pause");
@@ -31,18 +31,16 @@ int main()
     return 0;
 }
 
-double S(double x, double y, int& k)
+double S(double x, double y, int k, int& t)
 {
-    double r = -4*x*x / 2;
-    double s = r;
+    double r = 1, s = 0;
+    t = 0;
     
-    for (; dabs(s-y) >= OBS_ERROR; k++)
+    for (; dabs(s-y) >= OBS_ERROR; k++, t++)
     {
         r = -r * 4*x*x / (4*k*k - 2*k);
         s += r;
     }
-
-    k--;
 
     return s;
 }

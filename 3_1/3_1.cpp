@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 using namespace std;
 
+double Y(double x);
+
 int main()
 {
     double a, b, h, x, y, miny, maxy;
@@ -9,14 +11,13 @@ int main()
     cin >> a >> b >> h;
 
     x = a;
-    miny = numeric_limits<double>::max();
-    maxy = numeric_limits<double>::min();
+    miny = maxy = Y(x);
 
     cout << "\nn\tx\ty\n";
 
     for (int i = 1; x <= b; x += h, i++)
     {
-        y = (1. - x*x/4.)*cos(x) - x/2.*sin(x);
+        y = Y(x);
 
         cout << i << ":\t" << x << ";\t" << y << endl;
 
@@ -29,4 +30,9 @@ int main()
     system("pause");
         
     return 0;
+}
+
+double Y(double x)
+{
+    return (1. - x*x/4.)*cos(x) - x/2.*sin(x);
 }
