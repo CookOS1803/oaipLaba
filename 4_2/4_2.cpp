@@ -41,9 +41,14 @@ int main ()
         break;
     }
 
-    for (int i = 0; i < N; i++)
-        if (a[i] == 0) k = i;
-    k++;
+    for (int i = N - 1; i >= 0; i--)
+    { 
+        if (a[i] == 0) 
+        { 
+            k = i + 1;
+            break;
+        }
+    }
 
     if (k >= N)
     {

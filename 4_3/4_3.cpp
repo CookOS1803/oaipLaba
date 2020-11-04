@@ -42,6 +42,8 @@ int main()
 
     system("pause");
 
+    delete[] a;
+
     return 0;
 }
 
@@ -50,8 +52,14 @@ bool func(int* arr, int size)
     int first = 0,
         last = size;
 
-    for (int i = 0; i < size; i++)
-        if (arr[i] == 0) last = i;
+    for (int i = size - 1; i >= 0; i--)
+    {
+        if (arr[i] == 0)
+        {
+            last = i;
+            break;
+        }
+    }
 
     if (last == size or last == 0) return false;
 
@@ -64,9 +72,9 @@ bool func(int* arr, int size)
 
     while (first < last)
     {
-        arr[first] = arr[first] ^ arr[last];
-        arr[last]  = arr[first] ^ arr[last];
-        arr[first] = arr[first] ^ arr[last];
+        int temp = arr[first];
+        arr[first] = arr[last];
+        arr[last] = temp;
 
         first++;
         last--;
