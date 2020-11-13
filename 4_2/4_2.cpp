@@ -12,8 +12,8 @@ int main ()
         choice,
         k = N,
         m = 0,
-        sum = 0,
-        mult = 1;
+        sum,
+        mult;
     double avrg;
 
     cout << "Select random (1) or manual (2) array: ";
@@ -57,6 +57,9 @@ int main ()
 
         return 0;
     }
+    
+    sum = 0;
+    mult = 1;
 
     for (int i = k; i < N; i++, m++)
         sum += a[i];

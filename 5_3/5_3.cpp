@@ -36,6 +36,9 @@ int main()
     
     func(a, n, sum, mult);
 
+    cout << "summ = " << sum << endl
+         << "multiplication = " << mult << endl;
+
     system("pause");
 
     return 0;
@@ -56,14 +59,20 @@ bool check_input(bool fail_flag)
 void func(double** arr, int order, double& sum, double& mult)
 {
     sum = 0, mult = 1;
-    //попрубуй два циклв
-    for (int j = 0; j < order; j++)
+    
+    for (int i = 1; i < order - 1; i++)
     {
-        if (order - 1 - j == j or order - j == j)
-            continue;
+        bool fhalf = i < order / 2;
 
-        for (int i = 1 + j; i < order - 1 - j; i++)
+        for (int j = 0; j < order; j++)
         {
+            if (fhalf)
+            {
+                if (j >= i and j <= order - 1 - i) continue;
+            }
+            else
+                if (j <= i and j >= order - 1 - i) continue;
+
             sum  += arr[i][j];
             mult *= arr[i][j];
         }

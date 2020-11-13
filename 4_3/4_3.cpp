@@ -40,9 +40,9 @@ int main()
               << "or has only one zero";
     cout << endl;
 
-    system("pause");
-
     delete[] a;
+
+    system("pause");
 
     return 0;
 }
@@ -63,7 +63,7 @@ bool func(int* arr, int size)
 
     if (last == size or last == 0) return false;
 
-    while (arr[first] != 0 and first < size) first++;
+    while (arr[first] != 0 and first < last) first++;
 
     if (first == last) return false;
 
