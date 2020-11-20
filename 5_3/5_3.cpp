@@ -38,6 +38,8 @@ int main()
 
     cout << "summ = " << sum << endl
          << "multiplication = " << mult << endl;
+    
+    delete[] a;
 
     system("pause");
 

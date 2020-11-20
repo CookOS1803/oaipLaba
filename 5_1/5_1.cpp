@@ -33,6 +33,8 @@ int main()
         if (j == -1) break;
     }
     
+    delete[] a;
+
     system("pause");
 
     return 0;

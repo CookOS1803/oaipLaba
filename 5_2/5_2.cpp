@@ -31,6 +31,8 @@ int main()
 
     cout << "max = " << max << endl;
 
+    delete[] a;
+
     system("pause");
 
     return 0;
