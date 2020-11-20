@@ -61,22 +61,26 @@ bool check_input(bool fail_flag)
 void func(double** arr, int order, double& sum, double& mult)
 {
     sum = 0, mult = 1;
+    int last = order - 1;
     
-    for (int i = 1; i < order - 1; i++)
+    for (int i = 1; i <= last / 2; i++)
     {
-        bool fhalf = i < order / 2;
-
-        for (int j = 0; j < order; j++)
+        for (int j = 0; j < i; j++)
         {
-            if (fhalf)
-            {
-                if (j >= i and j <= order - 1 - i) continue;
-            }
-            else
-                if (j <= i and j >= order - 1 - i) continue;
-
             sum  += arr[i][j];
             mult *= arr[i][j];
+
+            sum  += arr[i][last - j];
+            mult *= arr[i][last - j];
+
+            if (i != last - i)
+            {
+                sum  += arr[last - i][j];
+                mult *= arr[last - i][j];
+                
+                sum  += arr[last - i][last - j];
+                mult *= arr[last - i][last - j];
+            }
         }
     }
 }
