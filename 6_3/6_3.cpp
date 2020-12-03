@@ -6,20 +6,22 @@ const int STR_LEN = 256;
 int main()
 {
     char str[STR_LEN];
-    int k = 0;
+    int i = 0, k = 0;
 
     cout << "Enter string: ";
     cin.getline(str, STR_LEN);
 
-    for (int i = 0, j = 1; str[i] != '\0' and j <= 4; i++)
+    while (str[i] == ' ') i++;
+
+    for (int j = 1; str[i] != '\0' and j <= 4; i++)
     {
         if (j >= 2)
         {
-            str[k] = str[i];
+            str[k] = str[i + 1];
             k++;
         }
-
-        if (str[i] == ' ') j++;
+        
+        if (str[i] != ' ' and str[i + 1] == ' ') j++;
     }
     str[k] = '\0';
 
