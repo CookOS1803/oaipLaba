@@ -1,10 +1,13 @@
 ﻿#include <iostream>
 using namespace std;
 
+double dabs(double a);
 double S(double x);
 double Y(double x);
 double diff_S_Y(double x);
 void out_rez(double f(double x), double a, double b, double h);
+
+const double OBS_ERROR = 0.0001;
 
 int main()
 {
@@ -29,12 +32,18 @@ int main()
     return 0;
 }
 
+double dabs(double a)
+{
+    return a > 0 ? a : -a;
+}
+
 double S(double x)
 {
     double r = 1,
-           s = 0;
+           s = 0,
+           y = Y(x);
 
-    for (int k = 1; k <= 10; k++)
+    for (int k = 1; dabs(y - s) >= OBS_ERROR; k++)
     {
         r = -r * 4*x*x / (4*k*k - 2*k);
         s += r;
@@ -51,9 +60,7 @@ double Y(double x)
 
 double diff_S_Y(double x)
 {
-    double s = S(x);
-    double y = Y(x);
-    return s - y > 0 ? s - y : y - s;
+    return dabs(Y(x) - S(x));
 }
 
 void out_rez(double f(double x), double a, double b, double h)
