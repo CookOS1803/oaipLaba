@@ -55,7 +55,7 @@ double S(double x)
 double Y(double x)
 {
     double y = cos(x);
-    return y = 2*(y*y - 1);
+    return 2*(y*y - 1);
 }
 
 double diff_S_Y(double x)
@@ -67,8 +67,9 @@ void out_rez(double f(double x), double a, double b, double h)
 {   
     double x = a;
 
-    for (int i = 1; x <= b; x += h, i++)
+    while (x <= b)
     {
-        cout << i << ": " << f(x) << endl;
+        cout << "x = " << x << ": " << f(x) << endl;
+        x += h;
     }
 }
