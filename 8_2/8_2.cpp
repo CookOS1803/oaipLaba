@@ -2,10 +2,11 @@
 using namespace std;
 
 double dabs(double a);
-double S(double x);
+double S(double x, int* t);
 double Y(double x);
 double diff_S_Y(double x);
 void out_rez(double f(double x), double a, double b, double h);
+void out_rez(double f(double x, int *t), double a, double b, double h);
 
 const double OBS_ERROR = 0.0001;
 
@@ -37,16 +38,17 @@ double dabs(double a)
     return a > 0 ? a : -a;
 }
 
-double S(double x)
+double S(double x, int* t)
 {
     double r = 1,
            s = 0,
            y = Y(x);
-
+    if (t != nullptr) *t = 0;
     for (int k = 1; dabs(y - s) >= OBS_ERROR; k++)
     {
         r = -r * 4*x*x / (4*k*k - 2*k);
         s += r;
+        if (t != nullptr) (*t)++;
     }
 
     return s;
@@ -60,7 +62,7 @@ double Y(double x)
 
 double diff_S_Y(double x)
 {
-    return dabs(Y(x) - S(x));
+    return dabs(Y(x) - S(x, nullptr));
 }
 
 void out_rez(double f(double x), double a, double b, double h)
@@ -70,6 +72,20 @@ void out_rez(double f(double x), double a, double b, double h)
     while (x <= b)
     {
         cout << "x = " << x << ": " << f(x) << endl;
+        x += h;
+    }
+}
+
+void out_rez(double f(double x, int* t), double a, double b, double h)
+{
+    double x = a;
+    int t;
+
+    while (x <= b)
+    {
+        cout << "x = " << x << ": " << f(x, &t);
+        cout << "; tries: " << t;
+        cout << endl;
         x += h;
     }
 }
