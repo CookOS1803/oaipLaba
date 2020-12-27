@@ -15,6 +15,7 @@ struct student
 	double average;
 };
 
+void show_student(const student& s);
 void create();
 void view();
 void add();
@@ -29,7 +30,6 @@ int main()
 	{
 		cout << "1. Create\n2. View\n3. Add\n4. Solve Task\n5. Exit\n";
 		cin >> choice;
-		fgetc(stdin);
 
 		switch (choice)
 		{
@@ -41,9 +41,18 @@ int main()
 		}
 	}
 
-	system("pause");
-
 	return 0;
+}
+
+void show_student(const student& s)
+{
+	cout << "Last name: " << s.name
+		<< "\nGroup number: " << s.group
+		<< "\nPhysic score: " << s.phys
+		<< "\nMath score: " << s.math
+		<< "\nInformatics score: " << s.inf
+		<< "\nAverage score: " << s.average
+		<< endl << endl;
 }
 
 void create()
@@ -55,6 +64,7 @@ void create()
 	else
 		fclose(f);
 }
+
 
 void view()
 {
@@ -70,17 +80,12 @@ void view()
 
 	while (fread(&s, sizeof(student), 1, f))
 	{
-		cout << "Last name: "           << s.name
-			 << "\nGroup number: "      << s.group
-			 << "\nPhysic score: "      << s.phys
-			 << "\nMath score: "        << s.math
-			 << "\nInformatics score: " << s.inf
-			 << "\nAverage score: "     << s.average
-			 << endl << endl;
+		show_student(s);
 	}
 
 	fclose(f);
 }
+
 
 void add()
 {
@@ -118,11 +123,44 @@ void add()
 
 void solve()
 {
-	FILE *f;
+	FILE* f;
 
 	if (!(f = fopen(FILE_NAME, "rb")))
 	{
 		cout << "Error\n";
 		return;
 	}
+
+	student s;
+	int group, n = 0;
+	double avrg = 0;
+
+	cout << "Enter group number: ";
+	cin >> group;
+
+	while (fread(&s, sizeof(student), 1, f))
+	{
+		if (s.group == group)
+		{
+			n++;
+			avrg += s.average;
+		}
+	}
+
+	if (n != 0)
+	{
+		avrg = avrg / n;
+		
+		rewind(f);
+
+		while (fread(&s, sizeof(student), 1, f))
+		{
+			if (s.group == group and s.average > avrg)
+			{
+				cout << s.name << endl;
+			}
+		}
+	}
+
+	fclose(f);
 }
