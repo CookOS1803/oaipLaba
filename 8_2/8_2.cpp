@@ -84,8 +84,7 @@ void out_rez(double f(double x, int* t), double a, double b, double h)
     while (x <= b)
     {
         cout << "x = " << x << ": " << f(x, &t);
-        cout << "; tries: " << t;
-        cout << endl;
+        cout << "; tries: " << t << endl;
         x += h;
     }
 }
