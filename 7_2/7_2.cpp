@@ -220,11 +220,7 @@ void edit()
 		cout << "Error\n";
 	else
 	{
-		for (int i = 0; i < quantity; i++)
-		{
-			fwrite(&all[i], sizeof(student), 1, f);
-		}
-
+		fwrite(all, sizeof(student) * quantity, 1, f);
 		fclose(f);
 	}
 
@@ -301,10 +297,7 @@ void sort()
 		cout << "Error\n";
 	else
 	{
-		for (int i = 0; i < quantity; i++)
-		{
-			fwrite(&all[i], sizeof(student), 1, f);
-		}
+		fwrite(all, sizeof(student) * quantity, 1, f);
 
 		fclose(f);
 	}
