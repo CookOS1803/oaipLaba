@@ -32,30 +32,15 @@ int main()
 
 double y_normal(double x, int n)
 {
-    if (n % 1) n--;
+    if (n % 2) n--;
     if (n == 0) return 1;
 
-    double y;
+    double y = x;
 
-    if (n > 0)
+    while (n > 1)
     {
-        y = x;
-
-        while (n > 1)
-        {
-            y *= x;
-            n--;
-        }
-    }
-    else
-    {
-        y = 1/x;
-
-        while (n < -1)
-        {
-            y *= 1/x;
-            n++;
-        }
+        y *= x;
+        n--;
     }
 
     return y;
@@ -63,14 +48,8 @@ double y_normal(double x, int n)
 
 double y_recursive(double x, int n)
 {
-    if (n % 2)
-    {
-        //if ()
+    if (n <= 1) return 1;
 
-    }
-    else
-    {
-        if (n == 0) return 1;
-
-    }
+    if (n % 2) --n;
+    return x*x*y_recursive(x, n - 2);
 }
