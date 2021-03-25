@@ -139,7 +139,6 @@ void selection_sort()
 
 	fseek(f, 0, SEEK_END);
 	int n = ftell(f) / sizeof(record);
-	rewind(f);
 
 	int m;
 	record r1, r2;
