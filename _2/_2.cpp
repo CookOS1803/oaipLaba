@@ -145,7 +145,6 @@ void selection_sort()
 
 	for (int i = 0; i < n - 1; i++)
 	{	
-
 		fseek(f, sizeof(record) * i, SEEK_SET);
 		fread(&r1, sizeof(record), 1, f);
 
@@ -184,34 +183,80 @@ void quick_sort()
 		return;
 	}
 
-	fseek(f, 0, SEEK_END);
-	int i = 0,
-		j = ftell(f) / sizeof(record) - 1;
-	
-	record r1, r2;
-	fseek(f, sizeof(record) * (j / 2 + 1), SEEK_SET);
-	fread(&r1, sizeof(record), 1, f);
-	char key[sizeof(r1.destination)];
-	strcpy(key, r1.destination);
-
-	while (i <= j)
+	struct
 	{
-		fseek(f, sizeof(record) * i, SEEK_SET);		
-		while (fread(&r1, sizeof(record), 1, f) and r1.destination[0] < key[0]) i++;
+		int l;
+		int r;
+	} stack[20];
 
-		fseek(f, sizeof(record) * j, SEEK_SET);
-		while (fread(&r2, sizeof(record), 1, f) and r2.destination[0] > key[0])
-		{
-			fseek(f, sizeof(record) * --j, SEEK_SET);
-		}
+	int i, j, left, right, s = 0;
+	char key;
 
-		if (i <= j)
+	fseek(f, 0, SEEK_END);
+	int n = ftell(f) / sizeof(record);
+
+	stack[s].l = 0;
+	stack[s].r = n - 1;
+
+	record r1, r2;
+
+	while (s != -1)
+	{
+		left = stack[s].l;
+		right = stack[s].r;
+		s--;
+
+		while (left < right)
 		{
-			fseek(f, sizeof(record) * i, SEEK_SET);
-			fwrite(&r2, sizeof(record), 1, f);
-			fseek(f, sizeof(record) * j, SEEK_SET);
-			fwrite(&r1, sizeof(record), 1, f);
-			i++; j--;
+			i = left;
+			j = right;
+
+			fseek(f, sizeof(record) * ((left + right) / 2), SEEK_SET);
+			fread(&r1, sizeof(record), 1, f);
+			key = r1.destination[0];
+
+			while (i <= j)
+			{
+				fseek(f, sizeof(record) * i, SEEK_SET);
+				while (fread(&r1, sizeof(record), 1, f) and r1.destination[0] < key) i++;
+
+				fseek(f, sizeof(record) * j, SEEK_SET);
+				while (fread(&r2, sizeof(record), 1, f) and r2.destination[0] > key)
+				{
+					fseek(f, sizeof(record) * --j, SEEK_SET);
+				}
+
+				if (i <= j)
+				{
+					fseek(f, sizeof(record) * i, SEEK_SET);
+					fwrite(&r2, sizeof(record), 1, f);
+					fseek(f, sizeof(record) * j, SEEK_SET);
+					fwrite(&r1, sizeof(record), 1, f);
+					
+					i++; j--;
+				}
+			}
+
+			if ((j - left) < (right - i))
+			{
+				if (i < right)
+				{
+					s++;
+					stack[s].l = i;
+					stack[s].r = right;
+				}
+				right = j;
+			}
+			else
+			{
+				if (left < j)
+				{
+					s++;
+					stack[s].l = left;
+					stack[s].r = j;
+				}
+				left = i;
+			}
 		}
 	}
 
@@ -228,15 +273,15 @@ void linear_search()
 		return;
 	}
 
-	char sought[sizeof(record::destination)];
+	char key[sizeof(record::destination)];
 	cout << "Enter destination: ";
-	cin.getline(sought, sizeof(sought));
+	cin.getline(key, sizeof(key));
 
 	record r;
 
 	while (fread(&r, sizeof(record), 1, f))
 	{
-		if (!strcmp(r.destination, sought))
+		if (!strcmp(r.destination, key))
 		{
 			cout << "\nResult:\n";
 			show_record(r);
@@ -260,9 +305,9 @@ void binary_search()
 		return;
 	}
 
-	char sought[sizeof(record::destination)];
+	char key[sizeof(record::destination)];
 	cout << "Enter destination: ";
-	cin.getline(sought, sizeof(sought));
+	cin.getline(key, sizeof(key));
 
 	fseek(f, 0, SEEK_END);
 	int i = 0,
@@ -278,13 +323,13 @@ void binary_search()
 		fseek(f, sizeof(record) * m, SEEK_SET);
 		fread(&r, sizeof(record), 1, f);
 
-		if (r.destination[0] < sought[0]) i = m + 1;
+		if (r.destination[0] < key[0]) i = m + 1;
 		else j = m;
 	}
 
 	fseek(f, sizeof(record) * i, SEEK_SET);
 	fread(&r, sizeof(record), 1, f);
-	if (!strcmp(r.destination, sought))
+	if (!strcmp(r.destination, key))
 	{
 		cout << "\nResult:\n";
 		show_record(r);
