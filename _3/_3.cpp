@@ -90,12 +90,10 @@ stack* out_stack(stack* s)
 
 void view_stack(stack* s)
 {
-    stack* t = s;
-
-    while (t != nullptr)
+    while (s != nullptr)
     {
-        cout << t->info << " ";
-        t = t->next;
+        cout << s->info << " ";
+        s = s->next;
     }
 
     cout << endl;
@@ -165,24 +163,25 @@ void sort_info(stack* s)
 
 void solve(stack* s)
 {
-    stack *odds  = nullptr,
-          *evens = nullptr;
+    s = in_stack(s, 0);
+    stack *t1 = s,
+          *t2 = nullptr;
 
-    do
+    while (t1->next != nullptr)
     {
-        if (s->info % 2)
-            odds = in_stack(odds, s->info);
-        else
-            evens = in_stack(evens, s->info);
+        if ((t1->next)->info % 2)
+        {
+            stack* buf = t1->next;
+            t1->next = buf->next;
+            buf->next = t2;
+            t2 = buf;
+        }
+        else t1 = t1->next;
+    }
+    t1 = s;
+    s = t1->next;
+    delete t1;
 
-        s = s->next;
-
-    } while (s != nullptr);
-
-    cout << "Odd: ";  view_stack(odds);
-    cout << "Even: "; view_stack(evens);
-    cout << endl;
-
-    delete_stack(odds);
-    delete_stack(evens);
+    cout << "Even: "; view_stack(s);
+    cout << "Odd: ";  view_stack(t2);
 }
