@@ -165,13 +165,14 @@ void solve(stack* s)
 {
     s = in_stack(s, 0);
     stack *t1 = s,
-          *t2 = nullptr;
+          *t2 = nullptr,
+          *buf;
 
     while (t1->next != nullptr)
     {
-        if ((t1->next)->info % 2)
+        if (t1->next->info % 2)
         {
-            stack* buf = t1->next;
+            buf = t1->next;
             t1->next = buf->next;
             buf->next = t2;
             t2 = buf;
