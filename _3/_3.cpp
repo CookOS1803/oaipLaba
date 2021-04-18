@@ -10,12 +10,11 @@ struct stack
 
 stack* in_stack(stack* s, int info);
 stack* out_stack(stack* s, int* info);
-stack* out_stack(stack* s);
 void view_stack(stack* s);
 void delete_stack(stack*& s);
 void sort_p(stack*& s);
 void sort_info(stack* s);
-void solve(stack* s);
+void solve(stack*& s, stack*& t);
 
 int main()
 {
@@ -23,7 +22,8 @@ int main()
 
     int choice, n;
     bool exit = false;
-    stack* s = nullptr;
+    stack *s = nullptr,
+          *t = nullptr;
 
     while (!exit)
     {
@@ -33,7 +33,7 @@ int main()
         switch (choice)
         {
             case 1:
-                if (s != nullptr)
+                if (s)
                 {
                     cout << "Clear memory first\n\n";
                     break;
@@ -46,16 +46,21 @@ int main()
                 {
                     s = in_stack(s, rand() % 21 - 10);
                 }
-
             break;
             case 3:
                 cout << "Stack: ";
                 view_stack(s);
                 cout << endl;
             break;
-            case 4: delete_stack(s); break;
-            case 5: solve(s);        break;
-            case 6: exit = true;     break;
+            case 4:
+                delete_stack(s);
+                delete_stack(t);
+            break;
+            case 5: solve(s, t); break;
+            case 6:
+                delete_stack(s);
+                delete_stack(t);
+                exit = true;
         }
     }
 
@@ -65,7 +70,7 @@ int main()
 stack* in_stack(stack* s, int info)
 {
     stack* t = new stack;
-    
+
     t->info = info;
     t->next = s;
 
@@ -76,21 +81,16 @@ stack* out_stack(stack* s, int* info)
 {
     stack* t = s;
 
-    if (info != nullptr) *info = s->info;
+    if (info) *info = s->info;
     s = s->next;
 
     delete t;
     return s;
 }
 
-stack* out_stack(stack* s)
-{
-    return out_stack(s, nullptr);
-}
-
 void view_stack(stack* s)
 {
-    while (s != nullptr)
+    while (s)
     {
         cout << s->info << " ";
         s = s->next;
@@ -103,7 +103,7 @@ void delete_stack(stack*& s)
 {
     stack* t;
 
-    while (s != nullptr)
+    while (s)
     {
         t = s;
         s = s->next;
@@ -115,7 +115,7 @@ void sort_p(stack*& s)
 {
     stack *t = nullptr, *t1, *r;
 
-    if (s->next->next == nullptr) return;
+    if (!s->next->next) return;
 
     s = in_stack(s, 0);
 
@@ -131,12 +131,12 @@ void sort_p(stack*& s)
                 t1->next = r;
             }
         }
-        
+
         t = t1->next;
 
-    } while (s->next->next != t);
+    } while (s->next->next);
 
-    s = out_stack(s);
+    s = out_stack(s, nullptr);
 }
 
 void sort_info(stack* s)
@@ -159,30 +159,28 @@ void sort_info(stack* s)
         t = t1;
 
     } while (s->next != t);
-}
+} 
 
-void solve(stack* s)
+void solve(stack*& s, stack*& t)
 {
+    if (t) delete_stack(t);
+
     s = in_stack(s, 0);
     stack *t1 = s,
-          *t2 = nullptr,
           *buf;
 
-    while (t1->next != nullptr)
+    while (t1->next)
     {
         if (t1->next->info % 2)
         {
             buf = t1->next;
             t1->next = buf->next;
-            buf->next = t2;
-            t2 = buf;
+            buf->next = t;
+            t = buf;
         }
         else t1 = t1->next;
     }
     t1 = s;
     s = t1->next;
     delete t1;
-
-    cout << "Even: "; view_stack(s);
-    cout << "Odd: ";  view_stack(t2);
 }

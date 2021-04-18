@@ -11,10 +11,12 @@ struct list
 };
 
 void create_list(list*& b, list*& e, int info);
-void in_list(bool tobegin, list*& p, int info);
-void view_list(bool frombegin, list* p);
-void delete_list(list*& b);
-void solve(list* b, list* e);
+void in_list_to_begin(list*& b, int info);
+void in_list_to_end(list*& e, int info);
+void view_list_from_begin(list* b);
+void view_list_from_end(list* e);
+void delete_list(list*& b, list*& e);
+void solve(list*& b, list*& e, list*& tb, list*& te);
 
 int main()
 {
@@ -23,7 +25,9 @@ int main()
     int choice, n;
     bool exit = false;
     list *b = nullptr,
-         *e = nullptr;
+         *e = nullptr,
+         *tb = nullptr,
+         *te = nullptr;
 
     while (!exit)
     {
@@ -43,7 +47,7 @@ int main()
 
                     for (int i = 1; i < n; i++)
                     {
-                        in_list(true, b, rand() % 21 - 10);
+                        in_list_to_begin(b, rand() % 21 - 10);
                     }
                 }
             break;
@@ -64,14 +68,14 @@ int main()
                 {
                     for (int i = 0; i < n; i++)
                     {
-                        in_list(true, b, rand() % 21 - 10);
+                        in_list_to_begin(b, rand() % 21 - 10);
                     }
                 }
                 else
                 {
                     for (int i = 0; i < n; i++)
                     {
-                        in_list(false, e, rand() % 21 - 10);
+                        in_list_to_end(e, rand() % 21 - 10);
                     }
                 }
             break;
@@ -79,13 +83,20 @@ int main()
                 cout << "1. View from begin\n2. View from end\n";
                 cin >> choice;
 
-                if (choice == 1) view_list(true, b);
-                else             view_list(false, e);
+                if (choice == 1) view_list_from_begin(b);
+                else             view_list_from_end(e);
                 cout << endl;
             break;
-            case 4: delete_list(b); break;
-            case 5: solve(b, e);        break;
-            case 6: exit = true;     break;
+            case 4:
+                delete_list(b, e);
+                delete_list(tb, te);
+            break;
+            case 5: solve(b, e, tb, te); break;
+            case 6:
+                delete_list(b, e);
+                delete_list(tb, te);
+                exit = true;
+            break;
         }
     }
 
@@ -100,47 +111,47 @@ void create_list(list*& b, list*& e, int info)
     b = e = t;
 }
 
-void in_list(bool tobegin, list*& p, int info)
+void in_list_to_begin(list*& b, int info)
 {
     list* t = new list;
     t->info = info;
 
-    if (tobegin)
-    {
-        t->next = p;
-        p->prev = t;
-        p = t;
-    }
-    else
-    {
-        t->prev = p;
-        p->next = t;
-        p = t;
-    }
+    t->next = b;
+    b->prev = t;
+    b = t;
 }
 
-void view_list(bool frombegin, list* p)
+void in_list_to_end(list*& e, int info)
 {
-    if (frombegin)
+    list* t = new list;
+    t->info = info;
+
+    t->prev = e;
+    e->next = t;
+    e = t;
+}
+
+void view_list_from_begin(list* b)
+{
+    while (b)
     {
-        while (p)
-        {
-            cout << p->info << " ";
-            p = p->next;
-        }
-    }
-    else
-    {
-        while (p)
-        {
-            cout << p->info << " ";
-            p = p->prev;
-        }
+        cout << b->info << " ";
+        b = b->next;
     }
     cout << endl;
 }
 
-void delete_list(list*& b)
+void view_list_from_end(list* e)
+{
+    while (e)
+    {
+        cout << e->info << " ";
+        e = e->prev;
+    }
+    cout << endl;
+}
+
+void delete_list(list*& b, list*& e)
 {
     list* t;
 
@@ -150,30 +161,32 @@ void delete_list(list*& b)
         b = b->next;
         delete t;
     }
+    e = nullptr;
 }
 
-void solve(list* b, list* e)
+void solve(list*& b, list*& e, list*& tb, list*& te)
 {
-    in_list(true, b, 0);
+    if (tb) delete_list(tb, te);
+
+    in_list_to_begin(b, 0);
     list *t1 = b,
-         *t2b = nullptr,
-         *t2e = nullptr,
          *buf;
 
-    while (t1->next != nullptr)
+    while (t1->next)
     {
         if (t1->next->info % 2)
         {
             if (t1->next == e) e = t1;
             else if (t1->next == e->prev) e->prev = t1;
+
             buf = t1->next;
             buf->prev = nullptr;
             t1->next = buf->next;
             if (t1->next) t1->next->prev = t1;
-            buf->next = t2b;
+            buf->next = tb;
             if (buf->next) buf->next->prev = buf;
-            t2b = buf;
-            if (!t2e) t2e = t2b;
+            tb = buf;
+            if (!te) te = tb;
         }
         else t1 = t1->next;
     }
@@ -181,9 +194,4 @@ void solve(list* b, list* e)
     b = t1->next;
     b->prev = nullptr;
     delete t1;
-
-    cout << "Even (from begin): "; view_list(true, b);
-    cout << "Odd (from begin): ";  view_list(true, t2b);
-    cout << "Even (from end): ";   view_list(false, e);
-    cout << "Odd (from end): ";    view_list(false, t2e);
 }
