@@ -25,20 +25,22 @@ int priority(char c);
 
 int main()
 {
-    char str[32] = "(a-b)/(c+d)*e";
+    char str[32];// = "(a-b)/(c+d)*e";
     double data[5];
 
-    cout << "x = " << str << endl << endl;
-    
+    cout << "Enter formula: ";
+    cin.getline(str, sizeof(str));
+
+    strcpy(str, translate(str));
+    cout << str << endl;
+
     for (int i = 0; i < 5; i++)
     {
         cout << "Enter " << (char)(i + 97) << ": ";
         cin >> data[i];
     }
     cout << endl;
-
-    strcpy(str, translate(str));
-    cout << "x = " << str << " = " << result(str, data) << endl;
+    cout << result(str, data) << endl;
 
     system("pause");
     return 0;
@@ -120,6 +122,7 @@ char* translate(char* in)
             case '*': case '/': case '+': case '-':
                 while (s and priority(s->info) >= priority(c))
                 {
+
                     s = out_stack(s, a);
                     strcat(out, a);
                 }
@@ -151,12 +154,14 @@ double result(char* str, double* data)
         if (!priority(c)) s = in_stack(s, c);
         else
         {
-            if (!s)
+            if (!d)
             {
-                d = out_stack(d, &op1);
-                d = out_stack(d, &op2);
+                s = out_stack(s, &t);
+                op1 = data[t - 97];
+                s = out_stack(s, &t);
+                op2 = data[t - 97];
             }
-            else if (!s->next)
+            else if (!d->next)
             {
                 s = out_stack(s, &t);
                 op1 = data[t - 97];
@@ -164,10 +169,8 @@ double result(char* str, double* data)
             }
             else
             {
-                s = out_stack(s, &t);
-                op1 = data[t - 97];
-                s = out_stack(s, &t);
-                op2 = data[t - 97];
+                d = out_stack(d, &op1);
+                d = out_stack(d, &op2);
             }
 
             switch (c)
