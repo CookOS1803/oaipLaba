@@ -42,6 +42,7 @@ int main()
                 {
                     cout << "Enter amount: ";
                     cin >> n;
+                    if (n < 1) break;
 
                     create_list(b, e, rand() % 21 - 10);
 
@@ -176,22 +177,55 @@ void solve(list*& b, list*& e, list*& tb, list*& te)
     {
         if (t1->next->info % 2)
         {
-            if (t1->next == e) e = t1;
-            else if (t1->next == e->prev) e->prev = t1;
-
             buf = t1->next;
-            buf->prev = nullptr;
             t1->next = buf->next;
-            if (t1->next) t1->next->prev = t1;
+
             buf->next = tb;
-            if (buf->next) buf->next->prev = buf;
+            buf->prev = nullptr;
+
             tb = buf;
-            if (!te) te = tb;
+            te = tb;
+            break;
         }
         else t1 = t1->next;
     }
+
+    if (t1->next)
+    {
+        while (t1->next->next)
+        {
+            if (t1->next->info % 2)
+            {
+                buf = t1->next;
+                t1->next = buf->next;
+                t1->next->prev = t1;
+
+                buf->next = tb;
+                buf->next->prev = buf;
+                buf->prev = nullptr;
+
+                tb = buf;
+            }
+            else t1 = t1->next;
+        }
+
+        if (t1->next->info % 2)
+        {
+            if (t1->next = e) e = t1;
+
+            buf = t1->next;
+            t1->next = nullptr;
+
+            buf->next = tb;
+            buf->next->prev = buf;
+            buf->prev = nullptr;
+
+            tb = buf;
+        }
+    }
+
     t1 = b;
     b = t1->next;
-    b->prev = nullptr;
+    if (b) b->prev = nullptr;
     delete t1;
 }

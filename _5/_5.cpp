@@ -34,7 +34,7 @@ int main()
     strcpy(str, translate(str));
     cout << str << endl;
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
     {
         cout << "Enter " << (char)(i + 97) << ": ";
         cin >> data[i];
@@ -142,38 +142,19 @@ char* translate(char* in)
 
 double result(char* str, double* data)
 {
-    stack_c *s = nullptr;
     stack_d *d = nullptr;
-    char c, t;
+    char t;
     double op1, op2, res;
 
     for (int i = 0; i < strlen(str); i++)
     {
-        c = str[i];
-
-        if (!priority(c)) s = in_stack(s, c);
+        if (!priority(str[i])) d = in_stack(d, data[str[i] - 97]);
         else
         {
-            if (!d)
-            {
-                s = out_stack(s, &t);
-                op1 = data[t - 97];
-                s = out_stack(s, &t);
-                op2 = data[t - 97];
-            }
-            else if (!d->next)
-            {
-                s = out_stack(s, &t);
-                op1 = data[t - 97];
-                d = out_stack(d, &op2);
-            }
-            else
-            {
-                d = out_stack(d, &op1);
-                d = out_stack(d, &op2);
-            }
+            d = out_stack(d, &op1);
+            d = out_stack(d, &op2);
 
-            switch (c)
+            switch (str[i])
             {
                 case '+': res = op2 + op1; break;
                 case '-': res = op2 - op1; break;
