@@ -179,6 +179,7 @@ void solve(list*& b, list*& e, list*& tb, list*& te)
         {
             buf = t1->next;
             t1->next = buf->next;
+            t1->next->prev = t1;
 
             buf->next = tb;
             buf->prev = nullptr;
