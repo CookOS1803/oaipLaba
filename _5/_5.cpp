@@ -32,8 +32,9 @@ int main()
         switch (check(str))
         {
             case 1: cout << "Missing brackets\n"; break;
-            case 2: cout << "Missing operator\n"; break;
-            case 3: cout << "Missing operand\n";  break;
+            case 2: cout << "Empty brackets\n";   break;
+            case 3: cout << "Missing operator\n"; break;
+            case 4: cout << "Missing operand\n";  break;
 
             default: input = false;
         }
@@ -188,9 +189,6 @@ int check(const char* str)
 
     while (i < len)
     {
-
-        //if (c < 'a' or c > 'z' and !priority(c)) continue;
-
         if      (str[i] == '(') open++;
         else if (str[i] == ')') closing++;
 
@@ -209,14 +207,16 @@ int check(const char* str)
     {
         c = str[i];
 
+        if (c == '(' and str[i + 1] == ')') return 2;
+
         if ((c < 'a' or c > 'z') and !priority(c) and c != ')' and c != '(')
         {
             i++;
             continue;
         }
 
-        if ((priority(c1) or c1 == '(') and priority(c)) return 3;
-        if (!priority(c1) and c1 != '(' and !priority(c) and c != '(' and c != ')') return 2;
+        if ((priority(c1) or c1 == '(') and priority(c)) return 4;
+        if (!priority(c1) and c1 != '(' and !priority(c) and c != '(' and c != ')') return 3;
 
         c1 = c;
 
