@@ -19,7 +19,7 @@ int check(const char* str);
 
 int main()
 {
-    char str[32],       // = "(a-b)/(c+d)*e";
+    char str[32],
          rpn[32] = "";
     double data[26];
     bool input = true;
