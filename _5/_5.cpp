@@ -12,6 +12,7 @@ template <typename T> struct stack
 template <typename T> stack<T>* in_stack(stack<T>* s, T info);
 template <typename T> stack<T>* out_stack(stack<T>* s, T* info);
 template <typename T> stack<T>* out_stack(stack<T>* s);
+template <typename T> void delete_stack(stack<T>*& s);
 char* translate(const char* in, char* out);
 double result(const char* str, double* data);
 int priority(char c);
@@ -21,7 +22,7 @@ int main()
 {
     char str[32],
          rpn[32] = "";
-    double data[26];
+    double data[26], res;
     bool input = true;
 
     while (input)
@@ -40,7 +41,7 @@ int main()
         }
     }
 
-    cout << translate(str, rpn) << endl;
+    cout << translate(str, rpn) << endl << endl;
 
     for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
     {
@@ -51,7 +52,8 @@ int main()
         }
     }
 
-    cout << endl << result(rpn, data) << endl;
+    if (isinf(res = result(rpn, data))) cout << "Disvision by zero\n";
+    else cout << res << endl;
 
     system("pause");
     return 0;
@@ -86,6 +88,18 @@ template <typename T> stack<T>* out_stack(stack<T>* s)
 
     delete t;
     return s;
+}
+
+template <typename T> void delete_stack(stack<T>*& s)
+{
+    stack<T>* t;
+
+    while (s)
+    {
+        t = s;
+        s = s->next;
+        delete t;
+    }
 }
 
 char* translate(const char* in, char* out)
@@ -156,7 +170,14 @@ double result(const char* str, double* data)
                 case '+': res = op2 + op1;     break;
                 case '-': res = op2 - op1;     break;
                 case '*': res = op2 * op1;     break;
-                case '/': res = op2 / op1;     break;
+                case '/':
+                    res = op2 / op1;
+                    if (op1 == 0)
+                    {
+                        delete_stack(d);
+                        return res;
+                    }
+                break;
                 case '^': res = pow(op2, op1); break;
             }
             
@@ -185,7 +206,7 @@ int check(const char* str)
         open    = 0,
         closing = 0,
         i       = 0;
-    char c, c1, c2;
+    char c, ct;
 
     while (i < len)
     {
@@ -199,8 +220,8 @@ int check(const char* str)
     i = 0;
 
     while (i < len and ((str[i] < 'a' or str[i] > 'z') and !priority(str[i]) and str[i] != '(')) i++;
-    c1 = str[i];
-    if (priority(c1)) return 3;
+    ct = str[i];
+    if (priority(ct)) return 3;
     i++;
 
     while (i < len)
@@ -215,15 +236,15 @@ int check(const char* str)
             continue;
         }
 
-        if ((priority(c1) or c1 == '(') and priority(c)) return 4;
-        if (!priority(c1) and c1 != '(' and !priority(c) and c != '(' and c != ')') return 3;
+        if ((priority(ct) or ct == '(') and priority(c)) return 4;
+        if (!priority(ct) and ct != '(' and !priority(c) and c != '(' and c != ')') return 3;
 
-        c1 = c;
+        ct = c;
 
         i++;
     }
 
-    if (priority(c1)) return 3;
+    if (priority(ct)) return 3;
 
 
     return 0;

@@ -2,53 +2,187 @@
 
 using namespace std;
 
+struct record
+{
+    int key;
+    char name[16];
+};
+
 struct tree
 {
-    int info;
+    record info;
     tree *left  = nullptr,
          *right = nullptr;
 };
 
-void add_tree(tree* root, int key);
+bool add_tree(tree*& root, record rec);
 void view_tree(tree* p, int level);
-void delete_info(tree*& root, int key);
-void delete_tree(tree* root);
-void create_balanced(tree*& p, int n, int k, int* a);
+tree* find_info(tree* root, int choice);
+bool delete_info(tree*& root, int key);
+void delete_tree(tree*& root);
+void create_balanced(tree*& p, int n, int k, record* a);
+void tree_to_array(record* a, int& i, tree* p);
+void show_preorder(tree* p);
+void show_inorder(tree* p);
+void show_postorder(tree* p);
+tree* solve(tree* root, int n);
+double sum(tree* p);
+tree* closest(tree* p, double d);
 
 int main()
 {
-    tree* root = nullptr;
-    int a[] = {3, 5, 7, -1, 6, 1, 0, -4, -3, -8, -10, -5, -7, 4};
-    create_balanced(root, 0, 14, a);
+    tree *root = nullptr,
+         *temp = nullptr;
+    record t, *a;
+    bool exit = false;
+    int choice, n;
     
-    view_tree(root, 0);
+    while (!exit)
+    {
+        cout << "1. Create\n2. Add\n3. Balance\n4. Find\n5. Show tree\n6. Delete info\n7. Delete tree\n8. Solve Task\n9. Exit\n";
+        cin >> choice;
 
-    system("pause");
+        switch (choice)
+        {
+            case 1:
+                if (root) cout << "Clear memory first\n\n";
+                else
+                {
+                    cout << "Enter amount: ";
+                    cin >> n;
+                    if (n < 1) break;
+
+                    for (int i = 0; i < n; i++)
+                    {
+                        cout << "Enter " << i + 1 << " key: ";
+                        cin >> t.key;
+                        getc(stdin);
+
+                        cout << "Enter " << i + 1 << " name: ";
+                        cin.getline(t.name, sizeof(t.name));
+
+                        if (!add_tree(root, t))
+                        {
+                            cout << "A record with such key already exists\n\n";
+                            i--;
+                        }
+                    }
+                }
+            break;
+            case 2:
+                if (!root) cout << "Create tree first\n\n";
+                else
+                {
+                    cout << "Enter key: ";
+                    cin >> t.key;
+                    getc(stdin);
+
+                    cout << "Enter name: ";
+                    cin.getline(t.name, sizeof(t.name));
+
+                    add_tree(root, t);
+                    n++;
+                }
+            break;
+            case 3:
+                if (!root) cout << "Create tree first\n\n";
+                else
+                {
+                    a = new record[n];
+
+                    int i = 0;
+                    tree_to_array(a, i, root);
+                    delete_tree(root);
+                    root = nullptr;
+                    create_balanced(root, 0, n, a);
+
+                    delete[] a;
+                }
+            break;
+            case 4:
+                if (!root) cout << "Create tree first\n\n";
+                else
+                {
+                    cout << "Enter key: ";
+                    cin >> choice;
+
+                    temp = find_info(root, choice);
+
+                    if (temp) cout << "Name: " << temp->info.name << endl << endl;
+                    else      cout << "There's no such record\n\n";
+                }
+            break;
+            case 5:
+                if (!root) cout << "Create tree first\n\n";
+                else
+                {
+                    cout << "1. Pre-order\n2. In-order\n3. Post-order\n";
+                    cin >> choice;
+                    cout << endl;
+
+                    switch (choice)
+                    {
+                        default:
+                        case 1: show_preorder(root); break;
+                        case 2: show_inorder(root);  break;
+                        case 3: show_postorder(root); break;
+                    }
+                    cout << endl;
+                }
+            break;
+            case 6:
+                if (!root) cout << "Create tree first\n\n";
+                else
+                {
+                    cout << "Enter key: ";
+                    cin >> choice;
+
+                    if (delete_info(root, choice)) n--;
+                    else cout << "There's no such record\n\n";
+                }
+            break;
+            case 7:
+                delete_tree(root);
+                root = nullptr;
+            break;
+            case 8: cout << solve(root, n)->info.name << endl; break;
+            case 9:
+                delete_tree(root);
+                exit = true;
+            break;
+        }
+    }
+
     return 0;
 }
 
-void add_tree(tree* root, int key)
+bool add_tree(tree*& root, record rec)
 {
-    tree *prev = nullptr, *t = root;
-    bool find = true;
+    if (!root)
+    {
+        root = new tree;
+        root->info = rec;
+        return true;
+    }
 
-    while (t and find)
+    tree *prev = nullptr, *t = root;
+
+    while (t)
     {
         prev = t;
-        if (key == t->info) find = false;
+        if (rec.key == t->info.key) return false;
         else
-            if (key < t->info) t = t->left;
-            else               t = t->right;
+            if (rec.key < t->info.key) t = t->left;
+            else                       t = t->right;
     }
 
-    if (find)
-    {
-        t = new tree;
-        t->info = key;
+    t = new tree;
+    t->info = rec;
 
-        if (key < prev->info) prev->left = t;
-        else               prev->right = t;
-    }
+    if (rec.key < prev->info.key) prev->left = t;
+    else                          prev->right = t;
+
+    return true;
 }
 
 void view_tree(tree* p, int level)
@@ -57,30 +191,43 @@ void view_tree(tree* p, int level)
     {
         view_tree(p->right, level + 1);
         for (int i = 0; i < level; i++) cout << "\t";
-        cout << p->info << endl;
+        cout << p->info.key << endl;
         view_tree(p->left, level + 1);
     }
 
 }
 
-void delete_info(tree*& root, int key)
+
+tree* find_info(tree* root, int choice)
+{
+    while (root and root->info.key != choice)
+    {
+        if (root->info.key > choice) root = root->left;
+        else                         root = root->right;
+    }
+
+    return root;
+}
+
+
+bool delete_info(tree*& root, int key)
 {
     tree *del = root,
          *pdel = nullptr,
          *r, *pr;
 
-    while (del and del->info != key)
+    while (del and del->info.key != key)
     {
         pdel = del;
 
-        if (del->info > key) del = del->left;
-        else                 del = del->right;
+        if (del->info.key > key) del = del->left;
+        else                     del = del->right;
     }
 
-    if (del == nullptr) return;
+    if (del == nullptr) return false;
 
     if      (del->right == nullptr) r = del->left;
-    else if (del->left == nullptr) r = del->right;
+    else if (del->left == nullptr)  r = del->right;
     else
     {
         pr = del;
@@ -101,24 +248,25 @@ void delete_info(tree*& root, int key)
         }
     }
 
-    if      (del == root)            root = r;
-    else if (del->info < pdel->info) pdel->left = r;
-    else                             pdel->right = r;
+    if      (del == root)                    root = r;
+    else if (del->info.key < pdel->info.key) pdel->left = r;
+    else                                     pdel->right = r;
 
     delete del;
+    return true;
 }
 
-void delete_tree(tree* root)
+void delete_tree(tree*& p)
 {
-    if (root)
+    if (p)
     {
-        delete_tree(root->left);
-        delete_tree(root->right);
-        delete root;
+        delete_tree(p->left);
+        delete_tree(p->right);
+        delete p;
     }
 }
 
-void create_balanced(tree*& p, int n, int k, int* a)
+void create_balanced(tree*& p, int n, int k, record* a)
 {
     if (n == k)
     {
@@ -136,3 +284,102 @@ void create_balanced(tree*& p, int n, int k, int* a)
         create_balanced(p->right, m + 1, k, a);
     }
 }
+
+void tree_to_array(record* a, int& i, tree* p)
+{
+    if (!p) return;
+        
+    tree_to_array(a, i, p->left);
+    a[i++] = p->info;
+    tree_to_array(a, i, p->right);
+}
+
+void show_preorder(tree* p)
+{
+    if (!p) return;
+    
+    cout << p->info.key << ": " << p->info.name << endl;
+    show_preorder(p->left);
+    show_preorder(p->right);
+}
+
+void show_inorder(tree* p)
+{
+    if (!p) return;
+
+    show_inorder(p->left);
+    cout << p->info.key << ": " << p->info.name << endl;
+    show_inorder(p->right);
+}
+
+void show_postorder(tree* p)
+{
+    if (!p) return;
+
+    show_postorder(p->left);
+    show_postorder(p->right);
+    cout << p->info.key << ": " << p->info.name << endl;
+}
+
+tree* solve(tree* root, int n)
+{
+    return closest(root, sum(root)/n);
+}
+
+double sum(tree* p)
+{
+    if (!p) return 0;
+
+    return p->info.key + sum(p->left) + sum(p->right);
+}
+
+tree* closest(tree* p, double d)
+{
+    if (d < p->info.key)
+    {
+        if (!p->left) return p;
+
+        tree* c = closest(p->left, d);
+        if (abs(c->info.key - d) > abs(p->info.key - d))
+        {
+            return p;
+        }
+        return c;
+    }
+    else
+    {
+        if (!p->right) return p;
+
+        tree* c = closest(p->right, d);
+        if (abs(c->info.key - d) > abs(p->info.key - d))
+        {
+            return p;
+        }
+        return c;
+    }
+}
+
+//0
+//0
+//2
+//2
+//1
+//1
+//10
+//10
+//5
+//5
+//4
+//4
+//3
+//3
+//8
+//8
+//-3
+//-3
+//-10
+//-10
+//-1
+//-1
+//-5
+//-5
