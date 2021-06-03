@@ -16,7 +16,6 @@ struct tree
 };
 
 bool add_tree(tree*& root, record rec);
-void view_tree(tree* p, int level);
 tree* find_info(tree* root, int choice);
 bool delete_info(tree*& root, int key);
 void delete_tree(tree*& root);
@@ -184,19 +183,6 @@ bool add_tree(tree*& root, record rec)
 
     return true;
 }
-
-void view_tree(tree* p, int level)
-{
-    if (p)
-    {
-        view_tree(p->right, level + 1);
-        for (int i = 0; i < level; i++) cout << "\t";
-        cout << p->info.key << endl;
-        view_tree(p->left, level + 1);
-    }
-
-}
-
 
 tree* find_info(tree* root, int choice)
 {

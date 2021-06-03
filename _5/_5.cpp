@@ -13,10 +13,13 @@ template <typename T> stack<T>* in_stack(stack<T>* s, T info);
 template <typename T> stack<T>* out_stack(stack<T>* s, T* info);
 template <typename T> stack<T>* out_stack(stack<T>* s);
 template <typename T> void delete_stack(stack<T>*& s);
+char* delete_whitespaces(const char* in, char* out);
 char* translate(const char* in, char* out);
 double result(const char* str, double* data);
 int priority(char c);
 int check(const char* str);
+
+enum ERRORS {SUCCESS, MISSING_BRACKETS, EMPTY_BRACKETS, MISSING_OPERAND, WRONG_SYMBOL};
 
 int main()
 {
@@ -29,15 +32,16 @@ int main()
     {
         cout << "Enter formula: ";
         cin.getline(str, sizeof(str));
+        delete_whitespaces(str, str);
 
         switch (check(str))
         {
-            case 1: cout << "Missing brackets\n"; break;
-            case 2: cout << "Empty brackets\n";   break;
-            case 3: cout << "Missing operator\n"; break;
-            case 4: cout << "Missing operand\n";  break;
+            case MISSING_BRACKETS: cout << "Missing brackets\n"; break;
+            case EMPTY_BRACKETS:   cout << "Empty brackets\n";   break;
+            case MISSING_OPERAND:  cout << "Missing operand\n";  break;
+            case WRONG_SYMBOL:     cout << "Wrong symbol\n";     break;
 
-            default: input = false;
+            case SUCCESS: input = false;
         }
     }
 
@@ -102,6 +106,18 @@ template <typename T> void delete_stack(stack<T>*& s)
     }
 }
 
+char* delete_whitespaces(const char* in, char* out)
+{
+    int k = 0;
+    for (int i = 0; i < strlen(in); i++)
+    {
+        if (in[i] != ' ') out[k++] = in[i];
+    }
+    out[k] = '\0';
+
+    return out;
+}
+
 char* translate(const char* in, char* out)
 {
     stack<char> *s = nullptr;
@@ -116,12 +132,14 @@ char* translate(const char* in, char* out)
 
         if (c >= 'a' and c <= 'z')
         {
+            if (i != 0 and ((in[i - 1] >= 'a' and in[i - 1] <= 'z') or in[i - 1] == ')')) s = in_stack(s, '*');
             a[0] = c;
             strcat(out, a);
         }
         else switch (c)
         {
             case '(':
+                if (i != 0 and ((in[i - 1] >= 'a' and in[i - 1] <= 'z') or in[i - 1] == ')')) s = in_stack(s, '*');
                 s = in_stack(s, c);
             break;
             case ')':
@@ -202,50 +220,30 @@ int priority(char c)
 
 int check(const char* str)
 {
-    int len     = strlen(str),
-        open    = 0,
-        closing = 0,
-        i       = 0;
-    char c, ct;
+    int len      = strlen(str),
+        brackets = 0;
+    char c1, c2;
 
-    while (i < len)
+    if (priority(str[0])) return MISSING_OPERAND;
+
+    for (int i = 0; i < len; i++)
     {
-        if      (str[i] == '(') open++;
-        else if (str[i] == ')') closing++;
+        c1 = str[i];
+        if (!priority(c1) and c1 != '(' and c1 != ')' and (c1 < 'a' or c1 > 'z')) return WRONG_SYMBOL;
+        c2 = str[i + 1];
 
-        i++;
-    }
-    if (open != closing) return 1;
-
-    i = 0;
-
-    while (i < len and ((str[i] < 'a' or str[i] > 'z') and !priority(str[i]) and str[i] != '(')) i++;
-    ct = str[i];
-    if (priority(ct)) return 3;
-    i++;
-
-    while (i < len)
-    {
-        c = str[i];
-
-        if (c == '(' and str[i + 1] == ')') return 2;
-
-        if ((c < 'a' or c > 'z') and !priority(c) and c != ')' and c != '(')
+        if (c1 == '(')
         {
-            i++;
-            continue;
+            if (c2 == ')') return EMPTY_BRACKETS;
+            brackets++;
         }
-
-        if ((priority(ct) or ct == '(') and priority(c)) return 4;
-        if (!priority(ct) and ct != '(' and !priority(c) and c != '(' and c != ')') return 3;
-
-        ct = c;
-
-        i++;
+        else if (c1 == ')') brackets--;
+        else if (priority(c1) and priority(c2)) return MISSING_OPERAND;
     }
 
-    if (priority(ct)) return 3;
+    if (priority(str[len - 1])) return MISSING_OPERAND;
+    
+    if (brackets != 0) return MISSING_BRACKETS;
 
-
-    return 0;
+    return SUCCESS;
 }
