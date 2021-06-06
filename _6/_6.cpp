@@ -25,7 +25,7 @@ void show_preorder(tree* p);
 void show_inorder(tree* p);
 void show_postorder(tree* p);
 tree* solve(tree* root, int n);
-double sum(tree* p);
+int sum(tree* p);
 tree* closest(tree* p, double d);
 
 int main()
@@ -309,10 +309,10 @@ void show_postorder(tree* p)
 
 tree* solve(tree* root, int n)
 {
-    return closest(root, sum(root)/n);
+    return closest(root, (double)sum(root)/n);
 }
 
-double sum(tree* p)
+int sum(tree* p)
 {
     if (!p) return 0;
 
